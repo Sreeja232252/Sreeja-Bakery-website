@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order - Sreeja Bakery</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff8e1;
+        }
+        header {
+            background-color: #d2691e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #8b4513;
+            text-align: center;
+        }
+        .category {
+            margin-top: 30px;
+        }
+        .category h3 {
+            color: #a0522d;
+            border-bottom: 2px solid #a0522d;
+            padding-bottom: 5px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .item span {
+            flex: 1;
+        }
+        .item button {
+            background-color: #8b4513;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .item button:hover {
+            background-color: #a0522d;
+        }
+        .cart {
+            margin-top: 40px;
+            border-top: 2px solid #a0522d;
+            padding-top: 20px;
+        }
+        .cart h3 {
+            color: #a0522d;
+        }
+        .cart-items {
+            margin-bottom: 20px;
+        }
+        #pay-btn {
+            background-color: #d2691e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        footer {
+            background-color: #d2691e;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+        }
+        .customer-details {
+            margin-top: 30px;
+        }
+        .customer-details input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <h1>Sreeja Bakery</h1>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html">Menu</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="order.html">Order</a>
+        <a href="blog.html">Blog</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>Order Page</h2>
+
+    <div class="category" id="juice">
+        <h3>Juice Items</h3>
+    </div>
+
+    <div class="category" id="snacks">
+        <h3>Spicy Snack Items</h3>
+    </div>
+
+    <div class="category" id="cakes">
+        <h3>Cake Items</h3>
+    </div>
+
+    <div class="category" id="biscuits">
+        <h3>Biscuits and Cookies</h3>
+    </div>
+
+    <div class="category" id="nuts">
+        <h3>Nuts</h3>
+    </div>
+
+    <div class="customer-details">
+        <input type="text" id="cust-name" placeholder="Enter your name">
+        <input type="email" id="cust-email" placeholder="Enter your email">
+        <input type="text" id="cust-address" placeholder="Enter your address">
+    </div>
+
+    <div class="cart">
+        <h3>Cart</h3>
+        <div class="cart-items" id="cart-items"></div>
+        <strong>Total: ₹<span id="cart-total">0</span></strong>
+        <br><br>
+        <button id="pay-btn">Proceed to Pay</button>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 Sreeja Bakery. All rights reserved.
+</footer>
+
+<script>
+    // Define items with juice, snacks, cakes, biscuits, and nuts categories
+    const items = {
+        juice: [
+            { name: "Mango Juice 2L", price: 100 },
+            { name: "Mango Juice 1L", price: 75 },
+            { name: "Mango Juice 600ml", price: 40 },
+            { name: "Mango Juice 250ml", price: 20 },
+            { name: "Mango Juice 100ml", price: 10 }
+        ],
+        snacks: [
+            { name: "Mixture 1kg", price: 200 },
+            { name: "Pakoda 1kg", price: 200 },
+            { name: "Kara Chev 1kg", price: 200 },
+            { name: "Omapodi 1kg", price: 200 },
+            { name: "Sweet Pakoda 1kg", price: 200 },
+            { name: "Muruku 1kg", price: 200 },
+            { name: "Groundnut Pakoda 1kg", price: 200 },
+            { name: "Groundnut Roast 1kg", price: 200 },
+            { name: "Halwa 1kg", price: 200 },
+            { name: "Jalebi 1kg", price: 200 },
+            { name: "Banana Chips 1kg", price: 350 }
+        ],
+        cakes: [
+            { name: "Plum Cakes 1kg", price: 400 },
+            { name: "Black Forest Cakes 1kg", price: 700 },
+            { name: "White Forest Cakes 1kg", price: 700 },
+            { name: "Icing Cakes 1kg", price: 450 }
+        ],
+        biscuits: [
+            { name: "Milk Bikies", price: 30 },
+            { name: "Good Day Biscuits", price: 40 },
+            { name: "Cream Biscuits", price: 50 }
+        ],
+        nuts: [
+            { name: "Dates", price: 150 },
+            { name: "Cashew Nuts", price: 200 },
+            { name: "Badam", price: 180 },
+            { name: "Pista", price: 220 },
+            { name: "Walnut", price: 250 }
+        ]
+    };
+
+    const cart = [];
+
+    function addItemToCart(name, price) {
+        const existing = cart.find(item => item.name === name);
+        if (existing) {
+            existing.qty++;
+        } else {
+            cart.push({ name, price, qty: 1 });
+        }
+        updateCart();
+    }
+
+    function updateCart() {
+        const cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = '';
+        let total = 0;
+        cart.forEach(item => {
+            total += item.price * item.qty;
+            const div = document.createElement('div');
+            div.textContent = `${item.name} x ${item.qty} = ₹${item.price * item.qty}`;
+            cartItems.appendChild(div);
+        });
+        document.getElementById('cart-total').textContent = total;
+    }
+
+    function renderItems() {
+        Object.keys(items).forEach(category => {
+            const container = document.getElementById(category);
+            items[category].forEach(({ name, price }) => {
+                const div = document.createElement('div');
+                div.className = 'item';
+
+                const span = document.createElement('span');
+                span.textContent = `${name} - ₹${price}`;
+
+                const button = document.createElement('button');
+                button.textContent = "Add";
+                button.addEventListener('click', () => addItemToCart(name, price));
+
+                div.appendChild(span);
+                div.appendChild(button);
+                container.appendChild(div);
+            });
+        });
+    }
+
+    document.getElementById('pay-btn').addEventListener('click', function () {
+        const total = parseInt(document.getElementById('cart-total').textContent);
+        const name = document.getElementById('cust-name').value.trim();
+        const email = document.getElementById('cust-email').value.trim();
+        const address = document.getElementById('cust-address').value.trim();
+
+        if (!name || !email || !address) {
+            alert('Please fill in your name, email, and address.');
+            return;
+        }
+
+        if (total === 0) {
+            alert('Cart is empty!');
+            return;
+        }
+
+        // Store order history (example using localStorage)
+        const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+        orderHistory.push({ name, email, address, cart, total, date: new Date().toISOString() });
+        localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+
+        var options = {
+            key: "rzp_test_yourkey",
+            amount: total * 100,
+            currency: "INR",
+            name: "Sreeja Bakery",
+            description: "Order Payment",
+            handler: function (response) {
+                alert("Payment successful! Order ID: " + response.razorpay_payment_id + "\nA confirmation email will be sent to " + email);
+            },
+            prefill: {
+                name: name,
+                email: email
+            },
+            theme: {
+                color: "#d2691e"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+    });
+
+    window.onload = renderItems;
+</script>
+
+</body>
+</html>
